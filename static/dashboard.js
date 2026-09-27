@@ -3,6 +3,24 @@ let chart;
 const money = (value) => Number(value).toFixed(2);
 const rows = document.getElementById("rows");
 const message = document.getElementById("msg");
+const theme = getComputedStyle(document.documentElement);
+const cssValue = (name) => theme.getPropertyValue(name).trim();
+const cssNumber = (name) => Number(cssValue(name));
+
+const chartTheme = {
+    axis: cssValue("--color-axis"),
+    grid: cssValue("--color-grid"),
+    muted: cssValue("--color-muted"),
+    point: cssValue("--color-point"),
+    ms: cssValue("--color-ms"),
+    hsd: cssValue("--color-hsd"),
+    total: cssValue("--color-total"),
+    lineWidth: cssNumber("--chart-line-width"),
+    totalLineWidth: cssNumber("--chart-total-line-width"),
+    pointRadius: cssNumber("--chart-point-radius"),
+    pointHoverRadius: cssNumber("--chart-point-hover-radius"),
+    tension: cssNumber("--chart-line-tension"),
+};
 
 async function getData() {
     return (await fetch("/api")).json();
@@ -47,8 +65,37 @@ function sortByDate(data) {
     });
 }
 
+function formatDate(date) {
+    const [day, month, year] = date.split("/").map(Number);
+    return new Intl.DateTimeFormat("en-GB", {
+        day: "numeric",
+        month: "short",
+    }).format(new Date(2000 + year, month - 1, day));
+}
+
+function salesDataset(label, key, color, width) {
+    return {
+        label,
+        data: currentData.map((item) => item[key]),
+        borderColor: color,
+        backgroundColor: color,
+        borderWidth: width,
+        pointRadius: chartTheme.pointRadius,
+        pointHoverRadius: chartTheme.pointHoverRadius,
+        pointBorderWidth: 2,
+        pointBackgroundColor: chartTheme.point,
+        pointHoverBackgroundColor: color,
+        pointHoverBorderColor: chartTheme.point,
+        tension: chartTheme.tension,
+        fill: false,
+    };
+}
+
+let currentData = [];
+
 function draw(data) {
     data = sortByDate(data);
+    currentData = data;
     rows.innerHTML = data.map((item) => `
         <tr><td>${item.date}</td><td>${money(item.ms)}</td><td>${money(item.hsd)}</td><td>${money(item.total)}</td></tr>
     `).join("");
@@ -57,17 +104,64 @@ function draw(data) {
     chart = new Chart(document.getElementById("chart"), {
         type: "line",
         data: {
-            labels: data.map((item) => item.date),
+            labels: data.map((item) => formatDate(item.date)),
             datasets: [
-                { label: "MS Sales", data: data.map((item) => item.ms), tension: 0.3 },
-                { label: "HSD Sales", data: data.map((item) => item.hsd), tension: 0.3 },
-                { label: "Total Sales", data: data.map((item) => item.total), tension: 0.3 },
+                salesDataset("MS Sales", "ms", chartTheme.ms, chartTheme.lineWidth),
+                salesDataset("HSD Sales", "hsd", chartTheme.hsd, chartTheme.lineWidth),
+                salesDataset("Total Sales", "total", chartTheme.total, chartTheme.totalLineWidth),
             ],
         },
         options: {
             responsive: true,
+            maintainAspectRatio: false,
             interaction: { mode: "index", intersect: false },
-            scales: { y: { beginAtZero: true } },
+            plugins: {
+                legend: {
+                    position: "top",
+                    align: "start",
+                    labels: {
+                        usePointStyle: true,
+                        pointStyle: "circle",
+                        boxWidth: 8,
+                        padding: 20,
+                        color: chartTheme.axis,
+                        font: { size: 13 },
+                    },
+                },
+                tooltip: {
+                    mode: "index",
+                    intersect: false,
+                    displayColors: true,
+                    callbacks: {
+                        title: (items) => items[0]?.label || "",
+                        label: (context) => `${context.dataset.label}: ${Number(context.raw).toLocaleString("en-US")} L`,
+                    },
+                },
+            },
+            scales: {
+                x: {
+                    grid: { display: false },
+                    ticks: { color: chartTheme.muted, maxRotation: 0, autoSkip: true },
+                    border: { display: false },
+                },
+                y: {
+                    beginAtZero: true,
+                    grace: "5%",
+                    title: {
+                        display: true,
+                        text: "Sales (Litres)",
+                        color: chartTheme.axis,
+                        font: { size: 12, weight: "600" },
+                    },
+                    grid: { color: chartTheme.grid, drawTicks: false },
+                    ticks: {
+                        color: chartTheme.muted,
+                        padding: 10,
+                        callback: (value) => Number(value).toLocaleString("en-US"),
+                    },
+                    border: { display: false },
+                },
+            },
         },
     });
 }
