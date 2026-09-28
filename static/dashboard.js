@@ -56,6 +56,27 @@ async function clearData() {
     draw([]);
     message.textContent = "Data cleared.";
 }
+async function generateSummary() {
+    const summaryCard = document.getElementById("summary-card");
+    const summaryText = document.getElementById("summary-text");
+
+    summaryText.textContent = "Generating summary...";
+    summaryCard.hidden = false;
+
+    const response = await fetch("/api/summary");
+    const data = await response.json();
+
+    if (!response.ok) {
+        summaryText.textContent = data.error;
+        return;
+    }
+
+    summaryText.textContent = data.summary;
+}
+
+document
+    .getElementById("performance-summary")
+    .addEventListener("click", generateSummary);
 
 function sortByDate(data) {
     return data.sort((first, second) => {
