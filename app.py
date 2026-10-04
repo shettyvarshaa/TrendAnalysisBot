@@ -2,6 +2,7 @@ from flask import Flask, jsonify, render_template, request
 
 from parser import parse_multi
 from storage import load_data, save_data
+from summary_service import generate_summary
 
 
 app = Flask(__name__)
@@ -15,6 +16,11 @@ def home():
 @app.get("/api")
 def get_data():
     return jsonify(load_data())
+
+
+@app.get("/api/summary")
+def get_summary():
+    return jsonify(summary=generate_summary(load_data()))
 
 
 @app.post("/api")

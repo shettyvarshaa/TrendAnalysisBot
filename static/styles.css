@@ -90,6 +90,11 @@ button {
     cursor: pointer;
 }
 
+button:disabled {
+    cursor: wait;
+    opacity: 0.65;
+}
+
 table {
     width: 100%;
     border-collapse: collapse;

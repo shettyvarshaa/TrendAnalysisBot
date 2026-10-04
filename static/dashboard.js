@@ -59,19 +59,33 @@ async function clearData() {
 async function generateSummary() {
     const summaryCard = document.getElementById("summary-card");
     const summaryText = document.getElementById("summary-text");
- 
+    const summaryButton = document.getElementById("performance-summary");
+
+    if (summaryButton.disabled) return;
+
+    summaryButton.disabled = true;
+    summaryButton.setAttribute("aria-busy", "true");
+    summaryButton.textContent = "Generating...";
     summaryText.textContent = "Generating summary...";
     summaryCard.hidden = false;
 
-    const response = await fetch("/api/summary");
-    const data = await response.json();
+    try {
+        const response = await fetch("/api/summary");
+        const data = await response.json();
 
-    if (!response.ok) {
-        summaryText.textContent = data.error;
-        return;
+        if (!response.ok) {
+            summaryText.textContent = data.error || "Unable to generate summary.";
+            return;
+        }
+
+        summaryText.textContent = data.summary;
+    } catch (error) {
+        summaryText.textContent = "Unable to generate summary. Please try again.";
+    } finally {
+        summaryButton.disabled = false;
+        summaryButton.removeAttribute("aria-busy");
+        summaryButton.textContent = "Generate Performance Summary";
     }
-
-    summaryText.textContent = data.summary;
 }
 
 document
