@@ -114,6 +114,11 @@ table {
     border-collapse: collapse;
 }
 
+.records-table {
+    width: 100%;
+    overflow-x: auto;
+}
+
 td, th {
     padding: 8px;
     border-bottom: 1px solid #ddd;
@@ -199,5 +204,9 @@ td:first-child, th:first-child {
     .records-heading {
         align-items: flex-start;
         gap: 12px;
+    }
+
+    .records-table table {
+        min-width: 430px;
     }
 }
