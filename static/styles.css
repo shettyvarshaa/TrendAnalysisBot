@@ -114,17 +114,10 @@ table {
     border-collapse: collapse;
 }
 
-.table-wrapper {
-    width: 100%;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-}
-
 td, th {
     padding: 8px;
     border-bottom: 1px solid #ddd;
     text-align: right;
-    white-space: nowrap;
 }
 
 td:first-child, th:first-child {
@@ -135,9 +128,58 @@ td:first-child, th:first-child {
     white-space: nowrap;
 }
 
-.record-actions button {
-    margin: 0 0 0 4px;
-    padding: 6px 10px;
+.record-menu {
+    position: relative;
+    display: inline-block;
+}
+
+.record-menu summary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    color: var(--color-text);
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    cursor: pointer;
+    list-style: none;
+}
+
+.record-menu summary::-webkit-details-marker {
+    display: none;
+}
+
+.record-menu summary:hover,
+.record-menu[open] summary {
+    background: var(--color-page);
+}
+
+.record-menu-options {
+    position: absolute;
+    z-index: 1;
+    top: calc(100% + 4px);
+    right: 0;
+    display: grid;
+    min-width: 100px;
+    padding: 4px;
+    background: var(--color-card);
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    box-shadow: 0 8px 18px rgba(15, 23, 42, 0.12);
+}
+
+.record-menu-options button {
+    margin: 0;
+    padding: 7px 10px;
+    color: var(--color-text);
+    background: transparent;
+    text-align: left;
+}
+
+.record-menu-options button:hover {
+    background: var(--color-page);
 }
 
 @media (max-width: 640px) {
@@ -157,21 +199,5 @@ td:first-child, th:first-child {
     .records-heading {
         align-items: flex-start;
         gap: 12px;
-    }
-
-    .table-wrapper table {
-        min-width: 520px;
-    }
-
-    .table-wrapper th:last-child,
-    .table-wrapper td:last-child {
-        position: sticky;
-        right: 0;
-        background: var(--color-card);
-        box-shadow: -6px 0 8px rgba(15, 23, 42, 0.08);
-    }
-
-    .table-wrapper th:last-child {
-        z-index: 1;
     }
 }

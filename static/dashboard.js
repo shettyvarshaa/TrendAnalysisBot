@@ -171,14 +171,22 @@ function draw(data) {
             <td>${money(item.hsd)}</td>
             <td>${money(item.total)}</td>
             <td class="record-actions">
-                <button type="button" data-action="edit">Edit</button>
-                <button type="button" data-action="remove">Remove</button>
+                <details class="record-menu">
+                    <summary aria-label="Actions for ${item.date}">...</summary>
+                    <div class="record-menu-options">
+                        <button type="button" data-action="edit">Edit</button>
+                        <button type="button" data-action="remove">Remove</button>
+                    </div>
+                </details>
             </td>
         </tr>
     `).join("");
 
     rows.querySelectorAll("tr").forEach((row, index) => {
-        row.querySelector('[data-action="edit"]').addEventListener("click", () => editRecord(data[index]));
+        row.querySelector('[data-action="edit"]').addEventListener("click", (event) => {
+            event.currentTarget.closest("details").open = false;
+            editRecord(data[index]);
+        });
         row.querySelector('[data-action="remove"]').addEventListener("click", () => removeRecord(data[index].date));
     });
 
