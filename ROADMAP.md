@@ -5,18 +5,20 @@
 - [x] Store daily records
 - [x] Display responsive sales chart
 - [x] Update graph after new input
+- [x] Add performance summary
+- [x] Add input validation feedback
+- [x] Display summary card in the dashboard
 
 ## Next
-- [ ] Add performance summary
-- [ ] Make it mobile responsive
-- [ ] Create a bot
+- [ ] Move storage from JSON to something else
+- [ ] Create a whatsapp bot
 
 ## UI
-- [ ] Improve dashboard spacing and empty states
-- [ ] Add input validation feedback
-- [ ] Add export to CSV
 - [ ] Give a better look to the 'Actions' tab in Daily Records 
 - [ ] Fix the edit menu, it should let editing row-wise
+- [ ] Improve dashboard spacing and empty states
+- [ ] Add export to CSV
+- [ ] Make it mobile responsive
 
 ## Bot
 - [ ] Send and Receive Whatsapp message
@@ -25,8 +27,7 @@
 
 ## Summarization
 - [ ] Define daily summary format
-- [ ] Display summary cards in the dashboard
+- [ ] Add an AI endpoint for summary generation
 
 ## Technical
-- [ ] Move storage from JSON to something else
 - [ ] Add environment variables for secrets
