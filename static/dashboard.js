@@ -3,6 +3,9 @@ let chart;
 const money = (value) => Number(value).toFixed(2);
 const rows = document.getElementById("rows");
 const message = document.getElementById("msg");
+const input = document.getElementById("input");
+const addButton = document.getElementById("add-report");
+const cancelEditButton = document.getElementById("cancel-edit");
 const theme = getComputedStyle(document.documentElement);
 const cssValue = (name) => theme.getPropertyValue(name).trim();
 const cssNumber = (name) => Number(cssValue(name));
@@ -27,7 +30,6 @@ async function getData() {
 }
 
 async function addReport() {
-    const input = document.getElementById("input");
     const text = input.value;
 
     if (!text.trim()) {
@@ -35,8 +37,8 @@ async function addReport() {
         return;
     }
 
-    const response = await fetch("/api", {
-        method: "POST",
+    const response = await fetch(editingDate ? `/api/record/${encodeURIComponent(editingDate)}` : "/api", {
+        method: editingDate ? "PUT" : "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ text }),
     });
@@ -45,6 +47,7 @@ async function addReport() {
     if (response.ok) {
         message.textContent = "Saved!";
         input.value = "";
+        stopEditing();
         draw(data);
     } else {
         message.textContent = data.error;
@@ -56,6 +59,70 @@ async function clearData() {
     draw([]);
     message.textContent = "Data cleared.";
 }
+
+async function removeRecord(date) {
+    const response = await fetch(`/api/record/${encodeURIComponent(date)}`, { method: "DELETE" });
+    const data = await response.json();
+
+    if (!response.ok) {
+        message.textContent = data.error || "Unable to remove the record.";
+        return;
+    }
+
+    if (editingDate === date) stopEditing();
+    draw(data);
+    message.textContent = "Record removed.";
+}
+
+function editRecord(item) {
+    editingDate = item.date;
+    input.value = `SalesReport;\n${item.date}\nMS;${item.ms}\nHSD;${item.hsd}\nTotal sales;${item.total}`;
+    addButton.textContent = "Save Changes";
+    cancelEditButton.hidden = false;
+    input.focus();
+    message.textContent = `Editing ${item.date}.`;
+}
+
+function stopEditing() {
+    editingDate = null;
+    addButton.textContent = "Add Report";
+    cancelEditButton.hidden = true;
+}
+async function generateSummary() {
+    const summaryCard = document.getElementById("summary-card");
+    const summaryText = document.getElementById("summary-text");
+    const summaryButton = document.getElementById("performance-summary");
+
+    if (summaryButton.disabled) return;
+
+    summaryButton.disabled = true;
+    summaryButton.setAttribute("aria-busy", "true");
+    summaryButton.textContent = "Generating...";
+    summaryText.textContent = "Generating summary...";
+    summaryCard.hidden = false;
+
+    try {
+        const response = await fetch("/api/summary");
+        const data = await response.json();
+
+        if (!response.ok) {
+            summaryText.textContent = data.error || "Unable to generate summary.";
+            return;
+        }
+
+        summaryText.textContent = data.summary;
+    } catch (error) {
+        summaryText.textContent = "Unable to generate summary. Please try again.";
+    } finally {
+        summaryButton.disabled = false;
+        summaryButton.removeAttribute("aria-busy");
+        summaryButton.textContent = "Generate Performance Summary";
+    }
+}
+
+document
+    .getElementById("performance-summary")
+    .addEventListener("click", generateSummary);
 
 function sortByDate(data) {
     return data.sort((first, second) => {
@@ -92,13 +159,28 @@ function salesDataset(label, key, color, width) {
 }
 
 let currentData = [];
+let editingDate = null;
 
 function draw(data) {
     data = sortByDate(data);
     currentData = data;
     rows.innerHTML = data.map((item) => `
-        <tr><td>${item.date}</td><td>${money(item.ms)}</td><td>${money(item.hsd)}</td><td>${money(item.total)}</td></tr>
+        <tr>
+            <td>${item.date}</td>
+            <td>${money(item.ms)}</td>
+            <td>${money(item.hsd)}</td>
+            <td>${money(item.total)}</td>
+            <td class="record-actions">
+                <button type="button" data-action="edit">Edit</button>
+                <button type="button" data-action="remove">Remove</button>
+            </td>
+        </tr>
     `).join("");
+
+    rows.querySelectorAll("tr").forEach((row, index) => {
+        row.querySelector('[data-action="edit"]').addEventListener("click", () => editRecord(data[index]));
+        row.querySelector('[data-action="remove"]').addEventListener("click", () => removeRecord(data[index].date));
+    });
 
     if (chart) chart.destroy();
     chart = new Chart(document.getElementById("chart"), {
@@ -168,4 +250,9 @@ function draw(data) {
 
 document.getElementById("add-report").addEventListener("click", addReport);
 document.getElementById("clear-data").addEventListener("click", clearData);
+cancelEditButton.addEventListener("click", () => {
+    input.value = "";
+    stopEditing();
+    message.textContent = "";
+});
 getData().then(draw);
