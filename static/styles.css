@@ -114,10 +114,17 @@ table {
     border-collapse: collapse;
 }
 
+.table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
 td, th {
     padding: 8px;
     border-bottom: 1px solid #ddd;
     text-align: right;
+    white-space: nowrap;
 }
 
 td:first-child, th:first-child {
@@ -150,5 +157,21 @@ td:first-child, th:first-child {
     .records-heading {
         align-items: flex-start;
         gap: 12px;
+    }
+
+    .table-wrapper table {
+        min-width: 520px;
+    }
+
+    .table-wrapper th:last-child,
+    .table-wrapper td:last-child {
+        position: sticky;
+        right: 0;
+        background: var(--color-card);
+        box-shadow: -6px 0 8px rgba(15, 23, 42, 0.08);
+    }
+
+    .table-wrapper th:last-child {
+        z-index: 1;
     }
 }
