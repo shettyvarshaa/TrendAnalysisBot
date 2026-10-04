@@ -16,6 +16,7 @@
 ## UI
 - [ ] Give a better look to the 'Actions' tab in Daily Records 
 - [ ] Fix the edit menu, it should let editing row-wise
+- [ ] Display only generate summary, add report button and hide the input , to open on click
 - [ ] Improve dashboard spacing and empty states
 - [ ] Add export to CSV
 - [ ] Make it mobile responsive
