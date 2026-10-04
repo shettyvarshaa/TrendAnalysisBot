@@ -16,8 +16,8 @@
             <textarea id="input" placeholder="Paste your WhatsApp sales reports here..."></textarea>
             <div class="actions">
                 <button id="add-report" type="button">Add Report</button>
-                <button id="clear-data" type="button">Clear Data</button>
                 <button id="performance-summary" type="button">Generate Performance Summary</button>
+                <button id="cancel-edit" type="button" hidden>Cancel Edit</button>
             </div>
             <p id="msg" role="status"></p>
         </section>
@@ -37,10 +37,13 @@
         </section>
 
         <section class="card">
-            <h2>Daily Records</h2>
+            <div class="records-heading">
+                <h2>Daily Records</h2>
+                <button id="clear-data" type="button">Clear Data</button>
+            </div>
             <table>
                 <thead>
-                    <tr><th>Date</th><th>MS</th><th>HSD</th><th>Total</th></tr>
+                    <tr><th>Date</th><th>MS</th><th>HSD</th><th>Total</th><th>Actions</th></tr>
                 </thead>
                 <tbody id="rows"></tbody>
             </table>

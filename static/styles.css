@@ -46,6 +46,20 @@ main {
     margin-bottom: 12px;
 }
 
+.records-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.records-heading h2 {
+    margin: 0;
+}
+
+.records-heading button {
+    margin-top: 0;
+}
+
 .chart-heading h2 {
     margin: 0;
     font-size: 1.15rem;
@@ -110,6 +124,15 @@ td:first-child, th:first-child {
     text-align: left;
 }
 
+.record-actions {
+    white-space: nowrap;
+}
+
+.record-actions button {
+    margin: 0 0 0 4px;
+    padding: 6px 10px;
+}
+
 @media (max-width: 640px) {
     :root {
         --chart-height: 280px;
@@ -122,5 +145,10 @@ td:first-child, th:first-child {
 
     .card {
         padding: 16px;
+    }
+
+    .records-heading {
+        align-items: flex-start;
+        gap: 12px;
     }
 }

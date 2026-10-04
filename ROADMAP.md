@@ -1,35 +1,32 @@
-
-**`ROADMAP.md`**
-
-```markdown
 # Roadmap
 
-## Completed
-
+## Current
 - [x] Parse multiple sales reports
 - [x] Store daily records
-- [x] Create interactive graph
-- [x] Add date sorting
-- [x] Add responsive chart styling
+- [x] Display responsive sales chart
+- [x] Update graph after new input
 
-## Next Up
+## Next
+- [ ] Add performance summary
+- [ ] Make it mobile responsive
+- [ ] Create a bot
 
-- [ ] Add dashboard empty state
-- [ ] Add weekly and monthly summaries
-- [ ] Add CSV export
-- [ ] Add parser unit tests
+## UI
+- [ ] Improve dashboard spacing and empty states
+- [ ] Add input validation feedback
+- [ ] Add export to CSV
+- [ ] Give a better look to the 'Actions' tab in Daily Records 
+- [ ] Fix the edit menu, it should let editing row-wise
 
-## Bot Integration
+## Bot
+- [ ] Send and Receive Whatsapp message
+- [ ] Send confirmation replies
+- [ ] Reminds to send sale report if missed
 
-- [ ] Choose WhatsApp bot provider
-- [ ] Receive incoming messages
-- [ ] Parse incoming reports automatically
-- [ ] Send confirmation messages
-- [ ] Send summary messages
+## Summarization
+- [ ] Define daily summary format
+- [ ] Display summary cards in the dashboard
 
-## Future Improvements
-
-- [ ] Move storage from JSON to SQLite
-- [ ] Add authentication
-- [ ] Add configurable sales categories
-- [ ] Add deployment configuration
+## Technical
+- [ ] Move storage from JSON to something else
+- [ ] Add environment variables for secrets
