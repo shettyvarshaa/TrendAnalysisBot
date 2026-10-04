@@ -15,9 +15,9 @@
     --chart-height: 360px;
     --chart-line-width: 2.5;
     --chart-total-line-width: 3.5;
-    --chart-point-radius: 4;
-    --chart-point-hover-radius: 6;
-    --chart-line-tension: 0.35;
+    --chart-point-radius: 0;
+    --chart-point-hover-radius: 0;
+    --chart-line-tension: 0;
 }
 
 body {

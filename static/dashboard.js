@@ -149,6 +149,7 @@ function salesDataset(label, key, color, width) {
         borderWidth: width,
         pointRadius: chartTheme.pointRadius,
         pointHoverRadius: chartTheme.pointHoverRadius,
+        pointHitRadius: 12,
         pointBorderWidth: 2,
         pointBackgroundColor: chartTheme.point,
         pointHoverBackgroundColor: color,
