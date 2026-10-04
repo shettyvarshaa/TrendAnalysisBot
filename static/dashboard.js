@@ -59,7 +59,7 @@ async function clearData() {
 async function generateSummary() {
     const summaryCard = document.getElementById("summary-card");
     const summaryText = document.getElementById("summary-text");
-
+ 
     summaryText.textContent = "Generating summary...";
     summaryCard.hidden = false;
 
