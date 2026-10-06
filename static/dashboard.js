@@ -26,7 +26,19 @@ const chartTheme = {
 };
 
 async function getData() {
-    return (await fetch("/api")).json();
+    const { data } = await requestJson("/api");
+    return data;
+}
+
+async function requestJson(url, options) {
+    const response = await fetch(url, options);
+    const contentType = response.headers.get("content-type") || "";
+
+    if (!contentType.includes("application/json")) {
+        throw new Error(`The API returned an unexpected response (${response.status}).`);
+    }
+
+    return { response, data: await response.json() };
 }
 
 async function addReport() {
@@ -37,20 +49,26 @@ async function addReport() {
         return;
     }
 
-    const response = await fetch(editingDate ? `/api/record/${encodeURIComponent(editingDate)}` : "/api", {
-        method: editingDate ? "PUT" : "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text }),
-    });
-    const data = await response.json();
+    try {
+        const { response, data } = await requestJson(
+            editingDate ? `/api/record/${encodeURIComponent(editingDate)}` : "/api",
+            {
+                method: editingDate ? "PUT" : "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ text }),
+            },
+        );
 
-    if (response.ok) {
-        message.textContent = "Saved!";
-        input.value = "";
-        stopEditing();
-        draw(data);
-    } else {
-        message.textContent = data.error;
+        if (response.ok) {
+            message.textContent = "Saved!";
+            input.value = "";
+            stopEditing();
+            draw(data);
+        } else {
+            message.textContent = data.error || "Unable to save the report.";
+        }
+    } catch (error) {
+        message.textContent = error.message;
     }
 }
 
@@ -61,8 +79,10 @@ async function clearData() {
 }
 
 async function removeRecord(date) {
-    const response = await fetch(`/api/record/${encodeURIComponent(date)}`, { method: "DELETE" });
-    const data = await response.json();
+    const { response, data } = await requestJson(
+        `/api/record/${encodeURIComponent(date)}`,
+        { method: "DELETE" },
+    );
 
     if (!response.ok) {
         message.textContent = data.error || "Unable to remove the record.";
@@ -102,8 +122,7 @@ async function generateSummary() {
     summaryCard.hidden = false;
 
     try {
-        const response = await fetch("/api/summary");
-        const data = await response.json();
+        const { response, data } = await requestJson("/api/summary");
 
         if (!response.ok) {
             summaryText.textContent = data.error || "Unable to generate summary.";

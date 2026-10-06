@@ -44,3 +44,11 @@ along with a short summary explaining the overall sales trend and notable change
 ## Intended Use
 
 Designed for businesses that receive regular sales reports and want a simple way to continuously track and understand their sales performance.
+
+### Vercel deployment 
+
+The Vercel filesystem is read-only except for `/tmp`. The app uses `/tmp/sales_data.json`
+for changes made during a serverless instance's lifetime, while the checked-in
+`sales_data.json` remains the initial dataset. This allows each user to calculate and
+view a graph, but it is not permanent shared storage: data can disappear when Vercel
+creates a new instance. (Still working on it, will fix this week :D)

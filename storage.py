@@ -1,16 +1,27 @@
 import json
+import os
 from pathlib import Path
 
 
-DATA_FILE = Path(__file__).with_name("sales_data.json")
+BASE_DATA_FILE = Path(__file__).with_name("sales_data.json")
+DATA_FILE = (
+    Path("/tmp/sales_data.json")
+    if os.environ.get("VERCEL")
+    else BASE_DATA_FILE
+)
 
 
 def load_data():
     if not DATA_FILE.exists():
-        return []
+        if DATA_FILE != BASE_DATA_FILE and BASE_DATA_FILE.exists():
+            source = BASE_DATA_FILE
+        else:
+            return []
+    else:
+        source = DATA_FILE
 
     try:
-        with DATA_FILE.open("r", encoding="utf-8") as file:
+        with source.open("r", encoding="utf-8") as file:
             return json.load(file)
     except (json.JSONDecodeError, OSError):
         return []
