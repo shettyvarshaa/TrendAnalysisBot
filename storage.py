@@ -2,7 +2,7 @@ import json
 import os
 from pathlib import Path
 
-
+# might have to change this logic since it looks like hardcoded
 BASE_DATA_FILE = Path(__file__).with_name("sales_data.json")
 DATA_FILE = (
     Path("/tmp/sales_data.json")
@@ -13,6 +13,7 @@ DATA_FILE = (
 
 def load_data():
     if not DATA_FILE.exists():
+        # another hardcoded path to check for the data file
         if DATA_FILE != BASE_DATA_FILE and BASE_DATA_FILE.exists():
             source = BASE_DATA_FILE
         else:
