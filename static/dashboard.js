@@ -6,6 +6,7 @@ const message = document.getElementById("msg");
 const input = document.getElementById("input");
 const addButton = document.getElementById("add-report");
 const cancelEditButton = document.getElementById("cancel-edit");
+const STORAGE_KEY = "sales-dashboard-data";
 const theme = getComputedStyle(document.documentElement);
 const cssValue = (name) => theme.getPropertyValue(name).trim();
 const cssNumber = (name) => Number(cssValue(name));
@@ -26,8 +27,30 @@ const chartTheme = {
 };
 
 async function getData() {
+    const savedData = readSavedData();
+    if (savedData) return savedData;
+
     const { data } = await requestJson("/api");
+    saveData(data);
     return data;
+}
+
+function readSavedData() {
+    try {
+        const savedData = JSON.parse(localStorage.getItem(STORAGE_KEY));
+        return Array.isArray(savedData) ? savedData : null;
+    } catch (error) {
+        console.warn("Unable to read saved dashboard data.", error);
+        return null;
+    }
+}
+
+function saveData(data) {
+    try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    } catch (error) {
+        console.warn("Unable to save dashboard data in this browser.", error);
+    }
 }
 
 async function requestJson(url, options) {
@@ -63,6 +86,7 @@ async function addReport() {
             message.textContent = "Saved!";
             input.value = "";
             stopEditing();
+            saveData(data);
             draw(data);
         } else {
             message.textContent = data.error || "Unable to save the report.";
@@ -74,6 +98,7 @@ async function addReport() {
 
 async function clearData() {
     await fetch("/api", { method: "DELETE" });
+    saveData([]);
     draw([]);
     message.textContent = "Data cleared.";
 }
@@ -90,6 +115,7 @@ async function removeRecord(date) {
     }
 
     if (editingDate === date) stopEditing();
+    saveData(data);
     draw(data);
     message.textContent = "Record removed.";
 }

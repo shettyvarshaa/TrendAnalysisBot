@@ -47,8 +47,7 @@ Designed for businesses that receive regular sales reports and want a simple way
 
 ### Vercel deployment 
 
-The Vercel filesystem is read-only except for `/tmp`. The app uses `/tmp/sales_data.json`
-for changes made during a serverless instance's lifetime, while the checked-in
-`sales_data.json` remains the initial dataset. This allows each user to calculate and
-view a graph, but it is not permanent shared storage: data can disappear when Vercel
-creates a new instance. (Still working on it, will fix this week :D)
+The dashboard saves each user's graph data in that browser's local storage, so refreshing
+the page preserves the result. The Vercel filesystem is read-only except for `/tmp`, so
+the server also uses `/tmp/sales_data.json` during a serverless instance's lifetime.
+Browser data is private to that browser and is cleared if its site data is removed. (Still working on it, will fix this week :D)
